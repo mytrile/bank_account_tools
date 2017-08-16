@@ -1,6 +1,6 @@
-require 'bank'
+require 'bank_account_tools'
 
-module Bank
+module BankAccountTools
   class BBAN # Basic Bank Account Number
     def initialize(country_code, code)
       @country_code, @code = country_code, code
@@ -22,7 +22,7 @@ module Bank
     [:account_number, :bank_identifier, :branch_identifier].each do |m|
       define_method(m) { data && data[m] }
     end
-    
+
     def country_applies_iban?
       !!specification
     end
@@ -38,7 +38,7 @@ module Bank
     end
 
     def self.specifications
-      @@specs ||= Bank.load_specifications(:iban)
+      @@specs ||= BankAccountTools.load_specifications(:iban)
     end
   end
 end

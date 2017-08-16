@@ -1,51 +1,34 @@
 require 'spec_helper'
 
-class Company
+class BankAccount
   include ActiveModel::Model
 
-  attr_accessor :iban, :name
-  validates :iban, iban: true
+  attr_accessor :iban_required, :iban_optional
 
-  def persisted?
-    false
-  end
-end
-
-class Person
-  include ActiveModel::Model
-
-  attr_accessor :iban
-  validates :iban, iban: true, allow_nil: true
-
-  def persisted?
-    false
-  end
+  validates :iban_required, iban: true
+  validates :iban_optional, iban: true, allow_nil: true
 end
 
 describe IbanValidator do
-  before {
-    @model = Company.new
-  }
+  let(:model) { BankAccount.new }
 
-  it 'should be valid' do
-    @model.iban = 'FR1420041010050500013M02606'
-    @model.valid?.must_equal true
+  it 'is valid' do
+    model.iban_required = 'FR1420041010050500013M02606'
+
+    expect(model).to be_valid
   end
 
-  it 'should not be valid' do
-    @model.iban = 'FR1420041010050500013'
-    @model.valid?.must_equal false
-    @model.errors[:iban].must_include 'is invalid'
+  it 'is not valid' do
+    model.iban_required = 'FR1420041010050500013'
+
+    expect(model).to be_invalid
+    expect(model.errors[:iban_required]).to include('is invalid')
   end
 
-  it 'should not validate with nil value' do
-    @model.iban.must_equal nil
-    @model.valid?.must_equal false
-  end
+  it 'does not validate with nil value' do
+    model.iban_required = 'FR1420041010050500013M02606'
+    model.iban_optional = nil
 
-  it 'should not use the validator with option allow_nil: true' do
-    @person = Person.new
-    @person.iban.must_equal nil
-    @person.valid?.must_equal true
+    expect(model).to be_valid
   end
 end

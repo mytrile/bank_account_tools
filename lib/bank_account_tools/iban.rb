@@ -1,8 +1,8 @@
 require 'forwardable'
-require 'bank/bban'
-require 'bank/validators/iban_validator' if defined? ActiveModel
+require 'bank_account_tools/bban'
+require 'bank_account_tools/validators/iban_validator' if defined? ActiveModel
 
-module Bank
+module BankAccountTools
   class IBAN # International Bank Account Number
     extend Forwardable
     def_delegators :bban,

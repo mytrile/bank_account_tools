@@ -1,7 +1,7 @@
-require 'bank/iban'
-require 'bank/bic'
+require 'bank_account_tools/iban'
+require 'bank_account_tools/bic'
 
-module Bank
+module BankAccountTools
   class Contact
     attr_reader :iban, :bic
 

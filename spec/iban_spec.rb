@@ -1,64 +1,62 @@
 require 'spec_helper'
 
-describe Bank::IBAN do
-  before do
-    @iban = Bank::IBAN.new('FR14 2004 1010 0505 0001 3M026 06')
+describe BankAccountTools::IBAN do
+  let(:iban) { BankAccountTools::IBAN.new('FR14 2004 1010 0505 0001 3M026 06') }
+
+  it 'is valid from class method' do
+    expect(BankAccountTools::IBAN.valid?('FR14 2004 1010 0505 0001 3M026 06')).to be_truthy
   end
 
-  it 'should valid from class method' do
-    Bank::IBAN.valid?('FR14 2004 1010 0505 0001 3M026 06').must_equal true
-  end
-
-  it 'should load the validation rules' do
-    Bank.load_specifications(:iban).wont_be :empty?
-    Bank.load_specifications(:iban).must_be_kind_of Hash
+  it 'loads the validation rules' do
+    expect(BankAccountTools.load_specifications(:iban)).to be_present
+    expect(BankAccountTools.load_specifications(:iban)).to be_kind_of(Hash)
   end
 
   it 'should return the county code' do
-    @iban.country_code.must_equal 'FR'
+    expect(iban.country_code).to eq('FR')
   end
 
   it 'should return the check digits' do
-    @iban.check_digits.must_equal '14'
+    expect(iban.check_digits).to eq('14')
   end
 
   it 'should return the BBAN' do
-    @iban.bban.must_be_kind_of Bank::BBAN
-    @iban.bban.to_s.must_equal '20041010050500013M02606'
+    expect(iban.bban).to be_a(BankAccountTools::BBAN)
+    expect(iban.bban.to_s).to eq('20041010050500013M02606')
   end
 
   it 'should convert to integer value' do
-    @iban.to_i.must_equal 200410100505000132202606152714
+    expect(iban.to_i).to eq(200410100505000132202606152714)
   end
 
   it 'should convert to string' do
-    @iban.to_s.must_equal 'FR1420041010050500013M02606'
+    expect(iban.to_s).to eq('FR1420041010050500013M02606')
   end
 
   it 'should convert to formatted string' do
-    @iban.to_s(true).must_equal 'FR14 2004 1010 0505 0001 3M02 606'
+    expect(iban.to_s(true)).to eq('FR14 2004 1010 0505 0001 3M02 606')
   end
 
-  it 'should respond_to? account_number' do
-    @iban.respond_to?(:account_number).must_equal true
+  it 'respond_to? account_number' do
+    expect(iban.respond_to?(:account_number)).to be_truthy
   end
 
-  it 'should return account_number' do
-    @iban.account_number.must_equal '0500013M026'
+  it 'returns account_number' do
+    expect(iban.account_number).to eq('0500013M026')
   end
 
-  it 'should return bank_identifier' do
-    @iban.bank_identifier.must_equal '20041'
+  it 'returns bank_identifier' do
+    expect(iban.bank_identifier).to eq('20041')
   end
 
-  it 'should return branch_identifier' do
-    @iban.branch_identifier.must_equal '01005'
+  it 'returns branch_identifier' do
+    expect(iban.branch_identifier).to eq('01005')
   end
 
   it 'knows which countries use IBAN' do
-    @iban.country_applies_iban?.must_equal true
-    unknown_iban = Bank::IBAN.new('ZZ99 123456790')
-    unknown_iban.country_applies_iban?.must_equal false
+    expect(iban.country_applies_iban?).to be_truthy
+
+    expect(BankAccountTools::IBAN.new('ZZ99 123456790').country_applies_iban?).to be_falsey
   end
 
   [
@@ -154,8 +152,8 @@ describe Bank::IBAN do
     'LC55HEMM000100010012001200023015',
   ].each do |code|
     describe code do
-      it 'should be valid' do
-        Bank::IBAN.new(code).valid?.must_equal true
+      it 'is valid' do
+        expect(BankAccountTools::IBAN.new(code)).to be_valid
       end
     end
   end

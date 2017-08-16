@@ -1,24 +1,22 @@
 require 'spec_helper'
 
-describe Bank::BIC do
-  before do
-    @bic = Bank::BIC.new('ABNACHZ8XXX')
-  end
+describe BankAccountTools::BIC do
+  let(:bic) { described_class.new('ABNACHZ8XXX')}
 
   it 'returns the right bank code' do
-    @bic.bank_code.must_equal 'ABNA'
+    expect(bic.bank_code).to eq('ABNA')
   end
 
   it 'returns the right country code' do
-    @bic.country_code.must_equal 'CH'
+    expect(bic.country_code).to eq('CH')
   end
 
   it 'returns the right location code' do
-    @bic.location_code.must_equal 'Z8'
+    expect(bic.location_code).to eq('Z8')
   end
 
   it 'returns the right branch code' do
-    @bic.branch_code.must_equal 'XXX'
+    expect(bic.branch_code).to eq('XXX')
   end
 
   [
@@ -28,7 +26,7 @@ describe Bank::BIC do
   ].each do |code|
     describe code do
       it 'has a valid format' do
-        Bank::BIC.new(code).valid?.must_equal true
+        expect(BankAccountTools::BIC.new(code)).to be_valid
       end
     end
   end
@@ -41,7 +39,7 @@ describe Bank::BIC do
   ].each do |code|
     describe code do
       it 'has an invalid format' do
-        Bank::BIC.new(code).valid?.must_equal false
+        expect(BankAccountTools::BIC.new(code)).not_to be_valid
       end
     end
   end

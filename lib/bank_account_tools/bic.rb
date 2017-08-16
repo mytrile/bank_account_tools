@@ -1,9 +1,9 @@
-require 'bank/validators/bic_validator' if defined? ActiveModel
+require 'bank_account_tools/validators/bic_validator' if defined? ActiveModel
 
-module Bank
+module BankAccountTools
   class BIC
     REGEX = /^([A-Z]{4})([A-Z]{2})([A-Z0-9]{2})([A-Z0-9]{3})?$/.freeze
-    
+
     def self.valid?(code)
       new(code).valid?
     end
@@ -31,7 +31,7 @@ module Bank
     def to_s(formatted=false)
       formatted ? to_formatted_str : @code
     end
-    
+
     def to_formatted_str
       "#{bank_code} #{country_code} #{location_code} #{branch_code}".strip
     end
